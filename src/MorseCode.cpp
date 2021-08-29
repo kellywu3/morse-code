@@ -9,8 +9,8 @@
 #include <ctype.h>
 #include "MorseCode.h"
 
-MorseCode::MorseCode(const char* str) :
-str { str }
+MorseCode::MorseCode(const char* userMessage) :
+userMessage { userMessage }
 {
 	// TODO Auto-generated constructor stub
 
@@ -20,26 +20,37 @@ MorseCode::~MorseCode() {
 	// TODO Auto-generated destructor stub
 }
 
-int MorseCode::timingSize() {
-	return 0;
+void MorseCode::begin() {
+	letterIdx = 0;
+	letterTimingIdx = 0;
+	nextWakeTime = 0;
+	morseLetterTiming = toMorseLetters(userMessage[letterIdx]);
 }
 
-int MorseCode::timingAt(int idx) {
-	return 0;
-}
-
-void MorseCode::doFlashWork() {
-	int i = 0;
-	while(str[i] != '\0') {
-		const char* timing = toMorseLetters(str[i]);
-		int j = 0;
-		while(timing[j] != '\0') {
-			int lightTime = toTiming(timing[j]);
-			printf("%s, %d\n", lightTime > 0 ? "on: " : "off: ", (lightTime * timingMultiplier));
-			j++;
-		}
-		i++;
+bool MorseCode::doFlashWork(unsigned long invokeTime) {
+	if(invokeTime < nextWakeTime) {
+		return true;
 	}
+
+//	if (userMessage[letterIdx] != '\0') {
+		if (morseLetterTiming[letterTimingIdx] != '\0') {
+			int lightTime = toTiming(morseLetterTiming[letterTimingIdx]);
+			unsigned long elapse = lightTime * timingMultiplier;
+			nextWakeTime = invokeTime + elapse;
+			printf("%s, %ld\n", lightTime > 0 ? "on: " : "off: ", elapse);
+			letterTimingIdx++;
+		} else {
+			letterIdx++;
+			if(userMessage[letterIdx] == '\0') {
+				return false;
+			}
+			morseLetterTiming = toMorseLetters(userMessage[letterIdx]);
+			letterTimingIdx = 0;
+		}
+		return true;
+//	} else {
+//		return false;
+//	}
 }
 
 int MorseCode::toTiming(char c) {
@@ -53,7 +64,7 @@ int MorseCode::toTiming(char c) {
 	case '_':
 		return -3;
 	case '/':
-		return 4;
+		return -4;
 	default:
 		return 0;
 	}

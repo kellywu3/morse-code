@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <cstring>
 #include <unordered_map>
-
 #include "MorseLetter.h"
 
 int MorseLetter::_cnt = 0;

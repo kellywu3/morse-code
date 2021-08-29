@@ -3,6 +3,7 @@
 #include <cmath>
 #include "MorseCode.h"
 #include "MorseLetter.h"
+#include "MorseBuffer.h"
 
 #define TIME_UNIT 500
 
@@ -48,12 +49,25 @@ bool doWork(unsigned long invokeTime) {
 
 
 int main() {
-	unsigned long now;
-	bool hasMore = true;
-	while (hasMore) {
-		now = millis();
-		hasMore = doWork(now);
-	}
+//	MorseCode mc1("Hello World");
+//	unsigned long now;
+
+	MorseBuffer mb1(3);
+	mb1.push('h');
+	mb1.push('i');
+	mb1.push('i');
+	mb1.push('i');
+	mb1.push('i');
+	mb1.pop();
+	mb1.push('h');
+
+
+
+//	bool hasMore = true;
+//	while (hasMore) {
+//		now = millis();
+//		hasMore = doWork(now);
+//	}
 
 //	for (char i='a'; i<'h'; i++) {
 //		MorseLetter* ml = MorseLetter::of(i);
@@ -69,8 +83,12 @@ int main() {
 //		}
 //	}
 
-//	while(true) {
-//		loop();
+//	bool hasMore = true;
+//	mc1.begin();
+//	while(hasMore) {
+//		now = millis();
+////		loop();
+//		hasMore = mc1.doFlashWork(now);
 //	}
 
 	return 0;
